@@ -14,17 +14,17 @@ import Layout from '../../components/Layout';
 export default {
 
   path: '/',
-  async action({ path, store, params }) {
-    const Home = await new Promise((resolve) => {
-      require.ensure([], require => resolve(require('./Home').default), 'home');
-    });
-
-    const title = 'Home';
-    return {
-      title,
-      chunk: 'home',
-      description: 'Home',
-      component: <Provider store={store}><Layout><Home /></Layout></Provider>,
-    };
-  }
+  children: [
+    {
+      path: '/',
+      action({ path, store, params }) {
+        return require.ensure([], require => require('./Home').default, 'home')
+          .then(Home => ({
+            title: 'Home',
+            chunk: 'home',
+            component: <Provider store={store}><Layout><Home /></Layout></Provider>,
+          }));
+      },
+    },
+  ],
 };
